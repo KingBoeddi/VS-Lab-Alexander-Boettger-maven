@@ -1,4 +1,5 @@
 # VS-Lab-Alexander-Boettger-maven
+Noch unnütz DB nicht implementiert
 
 Um die Anwendung zu starten muss man
 
