@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo App</title>
+    <style>
+        /* Styling für das ToDo-Formular */
+#todo-container {
+    margin-bottom: 10px;
+}
+
+#todo-container input[type="text"],
+#todo-container textarea {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+#add-todo-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Styling für die ToDo-Liste */
+#todo-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#todo-list li {
+    margin-bottom: 5px;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
+/* Styling für den Löschen-Button */
+.delete-btn {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 2px 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Styling für den Bearbeiten-Button */
+.edit-btn {
+    background-color: #0099ff;
+    color: white;
+    border: none;
+    padding: 2px 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <h1>ToDo App</h1>
+    
+    <div id="todo-container">
+        <input type="text" id="todo-title" placeholder="Titel">
+        <textarea id="todo-description" placeholder="Beschreibung"></textarea>
+        <button id="add-todo-btn">Add</button>
+    </div>
+    
+    <ul id="todo-list">
+        <!-- Die ToDo-Elemente werden hier dynamisch eingefügt -->
+    </ul>
+    
+    <script>
+        // Globale Array-Variable für die ToDo-Elemente
+let todos = [];
+
+// Funktion zum Hinzufügen eines ToDo-Elements
+function addTodo() {
+    const title = document.getElementById("todo-title").value;
+    const description = document.getElementById("todo-description").value;
+
+    // Überprüfen, ob Titel und Beschreibung eingegeben wurden
+    if (title && description) {
+        const todo = {
+            title: title,
+            description: description,
+            completed: false
+        };
+
+        todos.push(todo);
+        renderTodoList();
+        resetForm();
+    }
+}
+
+// Funktion zum Zurücksetzen des ToDo-Formulars
+function resetForm() {
+    document.getElementById("todo-title").value = "";
+    document.getElementById("todo-description").value = "";
+}
+
+// Funktion zum Löschen eines ToDo-Elements
+function deleteTodo(index) {
+    todos.splice(index, 1);
+    renderTodoList();
+}
+
+// Funktion zum Bearbeiten eines ToDo-Elements
+function editTodo(index) {
+    const todo = todos[index];
+    const newTitle = prompt("Neuer Titel:", todo.title);
+    const newDescription = prompt("Neue Beschreibung:", todo.description);
+
+    // Überprüfen, ob neue Werte eingegeben wurden
+    if (newTitle !== null && newDescription !== null) {
+        todo.title = newTitle;
+        todo.description = newDescription;
+        renderTodoList();
+    }
+}
+
+// Funktion zum Rendern der ToDo-Liste im UI
+function renderTodoList() {
+    const todoList = document.getElementById("todo-list");
+    todoList.innerHTML = "";
+
+    todos.forEach((todo, index) => {
+        const listItem = document.createElement("li");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = todo.completed;
+        checkbox.addEventListener("change", () => {
+            toggleCompleted(index);
+        });
+
+        const todoTitle = document.createElement("span");
+        todoTitle.textContent = todo.title;
+        if (todo.completed) {
+            todoTitle.classList.add("completed");
+        }
+
+        const todoDescription = document.createElement("span");
+        todoDescription.textContent = " - " + todo.description;
+        if (todo.completed) {
+            todoDescription.classList.add("completed");
+        }
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Bearbeiten";
+        editBtn.classList.add("edit-btn");
+        editBtn.addEventListener("click", () => {
+            editTodo(index);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.addEventListener("click", () => {
+            deleteTodo(index);
+        });
+
+        listItem.appendChild(checkbox);
+        listItem.appendChild(todoTitle);
+        listItem.appendChild(todoDescription);
+        listItem.appendChild(editBtn);
+        listItem.appendChild(deleteBtn);
+        todoList.appendChild(listItem);
+    });
+}
+
+
+
+// Funktion zum Umschalten des "completed"-Status eines ToDo-Elements
+function toggleCompleted(index) {
+    todos[index].completed = !todos[index].completed;
+    renderTodoList();
+}
+
+// Event Listener für den "Hinzufügen"-Button
+document.getElementById("add-todo-btn").addEventListener("click", addTodo);
+
+    </script>
+</body>
+</html>
