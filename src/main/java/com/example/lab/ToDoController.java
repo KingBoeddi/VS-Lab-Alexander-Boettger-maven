@@ -3,7 +3,6 @@ package com.example.lab;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,32 +14,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/api/todos")
 public class ToDoController {
     private final ToDoRepository toDoRepository;
     
-    @Autowired
     public ToDoController(ToDoRepository toDoRepository) {
         this.toDoRepository = toDoRepository;
     }
-
+    
     @GetMapping
-    public List<ToDo> getAllTodos() {
+    public List<ToDo> getAllToDos() {
         return toDoRepository.findAll();
     }
-
     
-
     @GetMapping("/{id}")
-    public ToDo getToDoById(@PathVariable Long id) {
-        return toDoRepository.findById(id).orElse(null);
+    public ResponseEntity<ToDo> getToDoById(@PathVariable Long id) {
+        Optional<ToDo> toDoOptional = toDoRepository.findById(id);
+        if (toDoOptional.isPresent()) {
+            return ResponseEntity.ok(toDoOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-    @PostMapping("/")
+    
+    @PostMapping
     public ToDo createToDo(@RequestBody ToDo toDo) {
         return toDoRepository.save(toDo);
     }
-
     
     @PutMapping("/{id}")
     public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo updatedToDo) {
