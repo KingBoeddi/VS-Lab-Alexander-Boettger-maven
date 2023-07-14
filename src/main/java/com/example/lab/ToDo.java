@@ -59,8 +59,4 @@ public class ToDo {
     }
 
     
-    
-    // Konstruktoren, Getter und Setter
-    
-    // Weitere Methoden
 }
